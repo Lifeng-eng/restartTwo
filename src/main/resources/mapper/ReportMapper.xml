@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.ReportMapper">
+
+
+    <select id="countByGender" resultType="com.example.pojo.vo.EmpGenderDataVO">
+        SELECT
+            CASE
+                WHEN gender = 1 THEN '男性员工'
+                WHEN gender = 2 THEN '女性员工'
+                ELSE '未知'
+                END as name,
+            COUNT(*) as value
+        FROM emp
+        WHERE gender IN (1, 2)
+        GROUP BY gender
+        ORDER BY gender
+    </select>
+    <select id="countByJob" resultType="map">
+        SELECT
+            CASE job
+                WHEN 1 THEN '教研主管'
+                WHEN 2 THEN '学工主管'
+                WHEN 3 THEN '其他'
+                WHEN 4 THEN '班主任'
+                WHEN 5 THEN '咨询师'
+                WHEN 6 THEN '讲师'
+                ELSE CONCAT('未知职位(', job, ')')
+                END as jobName,
+            COUNT(*) as employeeCount
+        FROM emp
+        WHERE job IS NOT NULL AND job BETWEEN 1 AND 6
+        GROUP BY job
+        ORDER BY job ASC
+    </select>
+</mapper>

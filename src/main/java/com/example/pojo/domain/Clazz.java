@@ -16,8 +16,8 @@ import org.hibernate.validator.constraints.Length;
 
 /**
 * 班级表
-* @TableName clazz
-*/
+* &#064;TableName  clazz
+ */
 
 @Data
 public class Clazz implements Serializable, Audit {

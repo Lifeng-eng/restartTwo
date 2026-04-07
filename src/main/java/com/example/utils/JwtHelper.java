@@ -1,5 +1,6 @@
 package com.example.utils;
 
+import com.example.pojo.dto.UserInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
@@ -49,51 +50,41 @@ public class JwtHelper {
      * @param token 客户端传来的 Token
      * @return 用户 ID，如果解析失败返回 null
      */
-    public static Long getId(String token) {
-        try {
-            if (!StringUtils.hasText(token)) {
-                return null;
-            }
-            
-            // 解析 Token
-            Claims claims = Jwts.parser()
-                    .setSigningKey(tokenSignKey) // 必须使用相同的密钥
-                    .parseClaimsJws(token)
-                    .getBody();
-            
-            // 从 claims 中取出 id
-            // 注意：根据存入时的类型，这里可能需要转换，jjwt 默认数字可能是 Integer
-            Object idObj = claims.get("id");
-            if (idObj instanceof Integer) {
-                return ((Integer) idObj).longValue();
-            }
-            return (Long) idObj;
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     /**
-     * 解析 Token 获取用户名
-     * @param token 客户端传来的 Token
-     * @return 用户名，如果解析失败返回 null
+     * 【核心改造】解析 Token 并获取用户信息对象
+     * 如果 Token 无效或过期，直接返回 null
      */
-    public static String getUsername(String token) {
+    public static UserInfo parseToken(String token) {
         try {
             if (!StringUtils.hasText(token)) {
                 return null;
             }
-            
+
+            // 1. 解析 Token
             Claims claims = Jwts.parser()
                     .setSigningKey(tokenSignKey)
                     .parseClaimsJws(token)
                     .getBody();
-            
-            return (String) claims.get("username");
-            
+
+            // 2. 将 Claims 中的数据提取到 UserInfo 对象中
+            UserInfo userInfo = new UserInfo();
+
+            // 处理 ID (兼容 Integer 和 Long)
+            Object idObj = claims.get("id");
+            if (idObj instanceof Integer) {
+                userInfo.setId(((Integer) idObj).longValue());
+            } else if (idObj instanceof Long) {
+                userInfo.setId((Long) idObj);
+            }
+
+            // 处理 Username
+            userInfo.setUsername((String) claims.get("username"));
+
+            return userInfo;
+
         } catch (Exception e) {
+            // 解析失败（签名错误、过期等）
             e.printStackTrace();
             return null;
         }

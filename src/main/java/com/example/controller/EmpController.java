@@ -1,7 +1,9 @@
 package com.example.controller;
 
+import com.example.annoation.OperationLog;
 import com.example.common.PageResult;
 import com.example.common.Result;
+import com.example.eums.OperationAction;
 import com.example.pojo.dto.EmpExpr;
 import com.example.pojo.dto.EmpSaveDTO;
 import com.example.pojo.dto.EmployeeQueryDTO;
@@ -33,6 +35,7 @@ public class EmpController {
      return Result.success(pageResult);
     }
     //该接口用于批量删除员工的数据信息
+    @OperationLog(operation = OperationAction.DELETE, entity = "emp", description = "{operator} 删除了员工，ID: {targetId}")
     @DeleteMapping()
     public Result<String> empDelete(@RequestParam("ids") List<Integer> ids) {
 
@@ -41,6 +44,7 @@ public class EmpController {
         return Result.success("success",null);
     }
     //该接口用于添加员工的信息
+    @OperationLog(operation = OperationAction.CREATE, entity = "emp", description = "{operator} 新增了员工，ID: {targetId}")
     @PostMapping
     public Result<String> empAdd(@RequestBody EmpExpr empExpr) {
 

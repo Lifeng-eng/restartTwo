@@ -1,6 +1,8 @@
 package com.example.controller;
 
+import com.example.annoation.OperationLog;
 import com.example.common.Result;
+import com.example.eums.OperationAction;
 import com.example.pojo.domain.Dept;
 import com.example.service.DeptService;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +31,7 @@ public class DeptController {
         return Result.success(depts);
     }
     //该接口用于根据ID删除部门数据
-
+    @OperationLog(operation = OperationAction.DELETE, entity = "dept", description = "{operator} 删除了部门，ID: {targetId}")
     @DeleteMapping()
     public Result<String> deleteDept(Integer id) {
 
@@ -39,7 +41,7 @@ public class DeptController {
 
     }
     //该接口用于添加部门数据
-
+    @OperationLog(operation = OperationAction.CREATE, entity = "dept", description = "{operator} 新增了部门，ID: {targetId}")
     @PostMapping()
     public Result<String> addDept(@RequestBody Dept dept) {
 

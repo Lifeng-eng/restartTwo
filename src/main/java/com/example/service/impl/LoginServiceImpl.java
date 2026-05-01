@@ -18,9 +18,11 @@ public class LoginServiceImpl implements LoginService {
     private static final Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
 
     private final LoginMapper loginMapper;
+    private final JwtHelper jwtHelper;
 
-    public LoginServiceImpl(LoginMapper loginMapper) {
+    public LoginServiceImpl(LoginMapper loginMapper, JwtHelper jwtHelper) {
         this.loginMapper = loginMapper;
+        this.jwtHelper = jwtHelper;
     }
 
     @Override
@@ -32,13 +34,13 @@ public class LoginServiceImpl implements LoginService {
 
         if (emp.getPassword().equals(userLoginDTO.getPassword())) {
             Map<String, Object> map = new HashMap<>();
-            map.put("id", emp.getId());
+            map.put("userId", emp.getId());
             map.put("username", emp.getUsername());
 
             try {
-                return JwtHelper.createToken(map); // 👈 在这里打断点或捕获异常
+                return jwtHelper.createToken(map);
             } catch (Throwable e) {
-                e.printStackTrace(); // 查看具体错误
+                log.error("JWT生成失败", e);
                 throw new RuntimeException("JWT生成失败", e);
             }
         } else {

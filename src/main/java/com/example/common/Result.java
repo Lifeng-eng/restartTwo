@@ -14,7 +14,7 @@ public class Result<T> {
     //
     private T data;
 
-    private Result() {
+    Result() {
 
     }
 
@@ -28,9 +28,9 @@ public class Result<T> {
 
         return success("操作成功", data);
     }
-    public static <T> Result<T> success(String msg, T data) {
+    public static <P> Result<P> success(String msg, P data) {
 
-        Result<T> result =new Result<>();
+        Result<P> result =new Result<>();
         result.setCode(1);
         result.setMsg(msg);
         result.setData(data);

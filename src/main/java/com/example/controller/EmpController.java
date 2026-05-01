@@ -2,7 +2,6 @@ package com.example.controller;
 
 import com.example.common.PageResult;
 import com.example.common.Result;
-import com.example.mapper.EmpMapper;
 import com.example.pojo.dto.EmpExpr;
 import com.example.pojo.dto.EmpSaveDTO;
 import com.example.pojo.dto.EmployeeQueryDTO;

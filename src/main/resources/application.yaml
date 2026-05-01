@@ -1,8 +1,6 @@
 spring:
   application:
     name: restartTwo
-
-
   datasource:
     url: jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/tlias?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=UTC
     username: D42GSLfbJRnARmv.root
@@ -18,3 +16,7 @@ mybatis:
 logging:
   level:
     org.springframework.jdbc.support.JdbcTransactionManager: debug
+
+jwt:
+  tokenSignKey: "my_super_secret_key_for_jwt_hs256_that_is_32_chars!!"
+  expiration: 86400000

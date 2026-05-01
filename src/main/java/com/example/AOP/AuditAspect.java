@@ -20,7 +20,7 @@ import java.util.Collection;
 public class AuditAspect {
 
     @Before("@annotation(autoInject)")
-    public void injectAuditFields(JoinPoint joinPoint, AutoInject autoInject) {
+    public void injectAuditFields(JoinPoint joinPoint, AutoInject autoInject) {//方法本身与注解对象
         OperationType operationType = autoInject.value();
         LocalDateTime now = LocalDateTime.now();
 

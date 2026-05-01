@@ -4,9 +4,9 @@ import com.example.context.BaseContext;
 import com.example.exception.BusinessException;
 import com.example.pojo.dto.UserInfo;
 import com.example.utils.JwtHelper;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -14,11 +14,17 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class TokenInterceptor implements HandlerInterceptor {
 
 
+    private final JwtHelper jwtHelper;
+
+    public TokenInterceptor(JwtHelper jwtHelper) {
+        this.jwtHelper = jwtHelper;
+    }
+
     /**
      * 请求处理前：校验 Token 并存储用户信息
      */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
+    public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler){
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
@@ -29,7 +35,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 
         // 【核心调用】一次性获取用户信息
         // 如果返回 null，说明 Token 无效或过期
-        UserInfo userInfo = JwtHelper.parseToken(token);
+        UserInfo userInfo = jwtHelper.parseToken(token);
 
         if (userInfo == null) {
             throw new BusinessException("Token无效或已过期");
@@ -47,7 +53,7 @@ public class TokenInterceptor implements HandlerInterceptor {
      * 如果不清理，下一个请求可能会用到这个线程，从而获取到错误的用户信息（串号）。
      */
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception ex){
         BaseContext.removeCurrentId();
     }
 
